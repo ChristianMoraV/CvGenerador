@@ -1,0 +1,257 @@
+<div class="form-container">
+  <h2>Curriculum Vitae Form</h2>
+
+  <form [formGroup]="cvForm" (ngSubmit)="onSubmit()">
+    <!-- Personal Information -->
+    <section formGroupName="personalInfo">
+      <h3>Personal Information</h3>
+      
+      <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input id="name" type="text" formControlName="name" required>
+        @if (cvForm.get('personalInfo.name')?.invalid && cvForm.get('personalInfo.name')?.touched) {
+          <div class="error-message">Name is required</div>
+        }
+      </div>
+      
+      <div class="form-group">
+        <label for="title">Professional Title *</label>
+        <input id="title" type="text" formControlName="title" required>
+        @if (cvForm.get('personalInfo.title')?.invalid && cvForm.get('personalInfo.title')?.touched) {
+          <div class="error-message">Professional title is required</div>
+        }
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input id="email" type="email" formControlName="email" required>
+        @if (cvForm.get('personalInfo.email')?.invalid && cvForm.get('personalInfo.email')?.touched) {
+          <div class="error-message">
+            @if (cvForm.get('personalInfo.email')?.errors?.['required']) {
+              Email is required
+            } @else if (cvForm.get('personalInfo.email')?.errors?.['email']) {
+              Please enter a valid email
+            }
+          </div>
+        }
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">Phone *</label>
+        <input id="phone" type="tel" formControlName="phone" required>
+        @if (cvForm.get('personalInfo.phone')?.invalid && cvForm.get('personalInfo.phone')?.touched) {
+          <div class="error-message">Phone number is required</div>
+        }
+      </div>
+      
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input id="address" type="text" formControlName="address">
+      </div>
+      
+      <div class="form-group">
+        <label for="profilePicture">Profile Picture URL</label>
+        <input id="profilePicture" type="text" formControlName="profilePicture">
+      </div>
+      
+      <div class="form-group">
+        <label for="summary">Professional Summary</label>
+        <textarea id="summary" formControlName="summary" rows="4"></textarea>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section>
+      <h3>Education</h3>
+      
+      @for (education of educationArray.controls; track $index) {
+        <div class="form-section" (formGroup)="education">
+          <div class="form-header">
+            <h4>Education #{{$index + 1}}</h4>
+            <button type="button" class="remove-button" (click)="removeEducation($index)">Remove</button>
+          </div>
+          
+          <div class="form-group">
+            <label for="institution{{$index}}">Institution *</label>
+            <input id="institution{{$index}}" type="text" formControlName="institution" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="degree{{$index}}">Degree *</label>
+            <input id="degree{{$index}}" type="text" formControlName="degree" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="fieldOfStudy{{$index}}">Field of Study *</label>
+            <input id="fieldOfStudy{{$index}}" type="text" formControlName="fieldOfStudy" required>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="eduStartDate{{$index}}">Start Date *</label>
+              <input id="eduStartDate{{$index}}" type="date" formControlName="startDate" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="eduEndDate{{$index}}">End Date</label>
+              <input id="eduEndDate{{$index}}" type="date" formControlName="endDate">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="eduDescription{{$index}}">Description</label>
+            <textarea id="eduDescription{{$index}}" formControlName="description" rows="3"></textarea>
+          </div>
+        </div>
+      }
+      
+      <button type="button" class="add-button" (click)="addEducation()">+ Add Education</button>
+    </section>
+
+    <!-- Work Experience -->
+    <section>
+      <h3>Work Experience</h3>
+      
+      @for (work of workExperienceArray.controls; track $index) {
+        <div class="form-section" (formGroup)="work">
+          <div class="form-header">
+            <h4>Work Experience #{{$index + 1}}</h4>
+            <button type="button" class="remove-button" (click)="removeWorkExperience($index)">Remove</button>
+          </div>
+          
+          <div class="form-group">
+            <label for="company{{$index}}">Company *</label>
+            <input id="company{{$index}}" type="text" formControlName="company" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="position{{$index}}">Position *</label>
+            <input id="position{{$index}}" type="text" formControlName="position" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="location{{$index}}">Location</label>
+            <input id="location{{$index}}" type="text" formControlName="location">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="workStartDate{{$index}}">Start Date *</label>
+              <input id="workStartDate{{$index}}" type="date" formControlName="startDate" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="workEndDate{{$index}}">End Date</label>
+              <input id="workEndDate{{$index}}" type="date" formControlName="endDate">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="workDescription{{$index}}">Description</label>
+            <textarea id="workDescription{{$index}}" formControlName="description" rows="3"></textarea>
+          </div>
+        </div>
+      }
+      
+      <button type="button" class="add-button" (click)="addWorkExperience()">+ Add Work Experience</button>
+    </section>
+
+    <!-- Skills -->
+    <section>
+      <h3>Skills</h3>
+      
+      @for (skill of skillsArray.controls; track $index) {
+        <div class="form-row" (formGroup)="skill">
+          <div class="form-group skill-name">
+            <label for="skillName{{$index}}">Skill *</label>
+            <input id="skillName{{$index}}" type="text" formControlName="name" required>
+          </div>
+          
+          <div class="form-group skill-level">
+            <label for="skillLevel{{$index}}">Level (1-5)</label>
+            <input id="skillLevel{{$index}}" type="range" min="1" max="5" formControlName="level">
+          </div>
+          
+          <button type="button" class="remove-button" (click)="removeSkill($index)">Remove</button>
+        </div>
+      }
+      
+      <button type="button" class="add-button" (click)="addSkill()">+ Add Skill</button>
+    </section>
+
+    <!-- Languages -->
+    <section>
+      <h3>Languages</h3>
+      
+      @for (language of languagesArray.controls; track $index) {
+        <div class="form-row" (formGroup)="language">
+          <div class="form-group">
+            <label for="languageName{{$index}}">Language *</label>
+            <input id="languageName{{$index}}" type="text" formControlName="name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="proficiency{{$index}}">Proficiency *</label>
+            <select id="proficiency{{$index}}" formControlName="proficiency" required>
+              <option value="">Select proficiency</option>
+              <option value="Native">Native</option>
+              <option value="Fluent">Fluent</option>
+              <option value="Advanced">Advanced</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Basic">Basic</option>
+            </select>
+          </div>
+          
+          <button type="button" class="remove-button" (click)="removeLanguage($index)">Remove</button>
+        </div>
+      }
+      
+      <button type="button" class="add-button" (click)="addLanguage()">+ Add Language</button>
+    </section>
+
+    <!-- Projects (Optional) -->
+    <section>
+      <h3>Projects (Optional)</h3>
+      
+      @for (project of projectsArray.controls; track $index) {
+        <div class="form-section" (formGroup)="project">
+          <div class="form-header">
+            <h4>Project #{{$index + 1}}</h4>
+            <button type="button" class="remove-button" (click)="removeProject($index)">Remove</button>
+          </div>
+          
+          <div class="form-group">
+            <label for="projectName{{$index}}">Project Name *</label>
+            <input id="projectName{{$index}}" type="text" formControlName="name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="projectDescription{{$index}}">Description</label>
+            <textarea id="projectDescription{{$index}}" formControlName="description" rows="3"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="projectUrl{{$index}}">URL</label>
+            <input id="projectUrl{{$index}}" type="text" formControlName="url">
+          </div>
+        </div>
+      }
+      
+      <button type="button" class="add-button" (click)="addProject()">+ Add Project</button>
+    </section>
+
+    <!-- References -->
+    <section>
+      <div class="form-group">
+        <label for="references">References</label>
+        <textarea id="references" formControlName="references" rows="4" 
+          placeholder="Available upon request or list specific references here."></textarea>
+      </div>
+    </section>
+
+    <!-- Submit Button -->
+    <div class="submit-container">
+      <button type="submit" class="submit-button">Generate CV</button>
+    </div>
+  </form>
+</div>

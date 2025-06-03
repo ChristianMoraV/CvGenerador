@@ -1,0 +1,55 @@
+.export-controls {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  
+  .export-button, .print-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  
+  .export-button {
+    background-color: var(--french-violet);
+    
+    &:hover:not(:disabled) {
+      background-color: var(--french-violet);
+      opacity: 0.9;
+    }
+  }
+  
+  .print-button {
+    background-color: var(--bright-blue);
+    
+    &:hover {
+      background-color: var(--bright-blue);
+      opacity: 0.9;
+    }
+  }
+}
+
+@media print {
+  .export-controls {
+    display: none;
+  }
+}

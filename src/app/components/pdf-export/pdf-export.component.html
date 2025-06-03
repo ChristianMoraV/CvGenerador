@@ -1,0 +1,19 @@
+<div class="export-controls">
+  <button class="export-button" [disabled]="isExporting" (click)="exportToPdf()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <path d="M19.5 7h-15A2.5 2.5 0 0 0 2 9.5v5A2.5 2.5 0 0 0 4.5 17H5v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2h.5a2.5 2.5 0 0 0 2.5-2.5v-5A2.5 2.5 0 0 0 19.5 7ZM17 19H7v-5h10Zm2.5-4h-.5v-1a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v1h-.5a.5.5 0 0 1-.5-.5v-5a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5Zm-5-11a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1h2V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1h2V3a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1h2Z"/>
+      <path d="M8 13h8a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2ZM8 16h6a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2Z"/>
+    </svg>
+    {{ isExporting ? 'Generando PDF...' : 'Exportar a PDF' }}
+  </button>
+  
+  <button class="print-button" (click)="printCV()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <path d="M19 8h-1V3H6v5H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zM8 5h8v3H8V5zm8 12v2H8v-4h8v2zm4-2h-2v-2H6v2H4v-4c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v4z"/>
+      <circle cx="18" cy="11.5" r="1"/>
+    </svg>
+    Imprimir
+  </button>
+</div>
+
+<p>pdf-export works!</p>
