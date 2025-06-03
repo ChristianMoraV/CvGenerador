@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:cv-app": "node dist/cv-app/server/server.mjs"
+    "serve:ssr:cv-app": "node dist/cv-app/server/server.mjs",
+    "build:gh-pages": "ng build --output-path docs && cp -r docs/browser/* docs/ && rm -rf docs/browser"
   },
   "private": true,
   "dependencies": {
