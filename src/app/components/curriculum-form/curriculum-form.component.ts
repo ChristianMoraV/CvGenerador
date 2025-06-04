@@ -1,21 +1,29 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { Curriculum } from '../../models/Info.interface';
 
 @Component({
   selector: 'app-curriculum-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './curriculum-form.component.html',
   styleUrls: ['./curriculum-form.component.scss']
 })
-export class CurriculumFormComponent {
+export class CurriculumFormComponent implements OnInit {
   @Output() formSubmit = new EventEmitter<Curriculum>();
   
-  cvForm: FormGroup;
+  cvForm!: FormGroup;
+  imagePreview: string | null = null;
+  selectedImage: File | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit() {
+    this.initForm();
+  }
+
+  initForm() {
     this.cvForm = this.fb.group({
       personalInfo: this.fb.group({
         name: ['', Validators.required],
@@ -31,17 +39,41 @@ export class CurriculumFormComponent {
       skills: this.fb.array([]),
       languages: this.fb.array([]),
       projects: this.fb.array([]),
-      references: ['']
+      references: [''],
+      profilePicture: [null],
     });
+
+    // Añadir al menos un elemento para cada array
+    this.addEducation();
+    this.addWorkExperience();
+    this.addSkill();
+    this.addLanguage();
   }
 
-  // Education form controls
-  get educationArray() {
+  // Getters para acceder a los FormArrays con la aserción de tipo correcta
+  get educationArray(): FormArray {
     return this.cvForm.get('education') as FormArray;
   }
 
+  get workExperienceArray(): FormArray {
+    return this.cvForm.get('workExperience') as FormArray;
+  }
+
+  get skillsArray(): FormArray {
+    return this.cvForm.get('skills') as FormArray;
+  }
+
+  get languagesArray(): FormArray {
+    return this.cvForm.get('languages') as FormArray;
+  }
+
+  get projectsArray(): FormArray {
+    return this.cvForm.get('projects') as FormArray;
+  }
+
+  // Métodos para añadir y eliminar elementos del FormArray
   addEducation() {
-    const educationGroup = this.fb.group({
+    const educationForm = this.fb.group({
       institution: ['', Validators.required],
       degree: ['', Validators.required],
       fieldOfStudy: ['', Validators.required],
@@ -49,113 +81,181 @@ export class CurriculumFormComponent {
       endDate: [''],
       description: ['']
     });
-    this.educationArray.push(educationGroup);
+    this.educationArray.push(educationForm);
   }
 
   removeEducation(index: number) {
-    this.educationArray.removeAt(index);
-  }
-
-  // Work experience form controls
-  get workExperienceArray() {
-    return this.cvForm.get('workExperience') as FormArray;
+    if (this.educationArray.length > 1) {
+      this.educationArray.removeAt(index);
+    }
   }
 
   addWorkExperience() {
-    const workExperienceGroup = this.fb.group({
+    const workForm = this.fb.group({
       company: ['', Validators.required],
       position: ['', Validators.required],
+      location: [''],
       startDate: ['', Validators.required],
       endDate: [''],
-      location: [''],
-      description: [''],
-      responsibilities: this.fb.array([this.fb.control('')])
+      description: ['']
     });
-    this.workExperienceArray.push(workExperienceGroup);
+    this.workExperienceArray.push(workForm);
   }
 
   removeWorkExperience(index: number) {
-    this.workExperienceArray.removeAt(index);
-  }
-
-  // Skills form controls
-  get skillsArray() {
-    return this.cvForm.get('skills') as FormArray;
+    if (this.workExperienceArray.length > 1) {
+      this.workExperienceArray.removeAt(index);
+    }
   }
 
   addSkill() {
-    const skillGroup = this.fb.group({
+    const skillForm = this.fb.group({
       name: ['', Validators.required],
       level: [3]
     });
-    this.skillsArray.push(skillGroup);
+    this.skillsArray.push(skillForm);
   }
 
   removeSkill(index: number) {
-    this.skillsArray.removeAt(index);
-  }
-
-  // Languages form controls
-  get languagesArray() {
-    return this.cvForm.get('languages') as FormArray;
+    if (this.skillsArray.length > 1) {
+      this.skillsArray.removeAt(index);
+    }
   }
 
   addLanguage() {
-    const languageGroup = this.fb.group({
+    const languageForm = this.fb.group({
       name: ['', Validators.required],
       proficiency: ['', Validators.required]
     });
-    this.languagesArray.push(languageGroup);
+    this.languagesArray.push(languageForm);
   }
 
   removeLanguage(index: number) {
-    this.languagesArray.removeAt(index);
-  }
-
-  // Projects form controls
-  get projectsArray() {
-    return this.cvForm.get('projects') as FormArray;
+    if (this.languagesArray.length > 1) {
+      this.languagesArray.removeAt(index);
+    }
   }
 
   addProject() {
-    const projectGroup = this.fb.group({
+    const projectForm = this.fb.group({
       name: ['', Validators.required],
       description: [''],
-      url: [''],
-      technologies: [[]],
-      startDate: [''],
-      endDate: ['']
+      url: ['']
     });
-    this.projectsArray.push(projectGroup);
+    this.projectsArray.push(projectForm);
   }
 
   removeProject(index: number) {
     this.projectsArray.removeAt(index);
   }
 
-  // Form submission
+  onImagePicked(event: Event) {
+    const fileInput = event.target as HTMLInputElement;
+    if (!fileInput.files || fileInput.files.length === 0) {
+      return;
+    }
+    
+    const file = fileInput.files[0];
+    
+    // Verificar tamaño - limitar a 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen es demasiado grande. El tamaño máximo es 5MB.');
+      fileInput.value = '';
+      return;
+    }
+    
+    // Validación de tipo de archivo
+    if (!file.type.match(/image\/(jpeg|jpg|png|gif|bmp|webp)/)) {
+      alert('Solo se permiten archivos de imagen (JPEG, PNG, GIF, BMP, WEBP)');
+      fileInput.value = '';
+      return;
+    }
+    
+    this.selectedImage = file;
+    
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+      
+      // Precargar la imagen para asegurar que está disponible antes de usar
+      const img = new Image();
+      img.onload = () => {
+        // La imagen se ha cargado correctamente
+        // Redimensionar si es demasiado grande
+        if (img.width > 800 || img.height > 800) {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Calcular nuevas dimensiones manteniendo la proporción
+          let newWidth = img.width;
+          let newHeight = img.height;
+          
+          if (img.width > img.height && img.width > 800) {
+            newWidth = 800;
+            newHeight = (img.height * 800) / img.width;
+          } else if (img.height > 800) {
+            newHeight = 800;
+            newWidth = (img.width * 800) / img.height;
+          }
+          
+          canvas.width = newWidth;
+          canvas.height = newHeight;
+          
+          ctx?.drawImage(img, 0, 0, newWidth, newHeight);
+          
+          // Usar la imagen redimensionada
+          const resizedImage = canvas.toDataURL('image/jpeg', 0.8);
+          this.imagePreview = resizedImage;
+          this.cvForm.get('personalInfo.profilePicture')?.setValue(resizedImage);
+        } else {
+          // Usar la imagen original si no es demasiado grande
+          this.cvForm.get('personalInfo.profilePicture')?.setValue(reader.result);
+        }
+      };
+      
+      img.onerror = () => {
+        alert('No se pudo cargar la imagen. Por favor, intenta con otra.');
+        this.imagePreview = null;
+        fileInput.value = '';
+      };
+      
+      img.src = reader.result as string;
+    };
+    
+    reader.onerror = () => {
+      alert('No se pudo leer el archivo. Por favor, intenta de nuevo.');
+      fileInput.value = '';
+    };
+    
+    reader.readAsDataURL(file);
+}
+
   onSubmit() {
     if (this.cvForm.valid) {
-      this.formSubmit.emit(this.cvForm.value as Curriculum);
+      const formData = this.cvForm.value as Curriculum;
+      this.formSubmit.emit(formData);
     } else {
-      // Mark all fields as touched to trigger validation visuals
+      // Marcar todos los campos como tocados para mostrar errores
       this.markFormGroupTouched(this.cvForm);
     }
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
-    Object.values(formGroup.controls).forEach(control => {
-      control.markAsTouched();
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
       } else if (control instanceof FormArray) {
-        control.controls.forEach(ctrl => {
-          if (ctrl instanceof FormGroup) {
-            this.markFormGroupTouched(ctrl);
+        for (let i = 0; i < control.length; i++) {
+          const arrayControl = control.at(i);
+          if (arrayControl instanceof FormGroup) {
+            this.markFormGroupTouched(arrayControl as FormGroup);
           } else {
-            ctrl.markAsTouched();
+            (arrayControl as FormControl).markAsTouched();
           }
-        });
+        }
+      } else if (control) {
+        control.markAsTouched();
       }
     });
   }

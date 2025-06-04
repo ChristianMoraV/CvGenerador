@@ -49,10 +49,19 @@
         <input id="address" type="text" formControlName="address">
       </div>
       
-      <div class="form-group">
-        <label for="profilePicture">Profile Picture URL</label>
-        <input id="profilePicture" type="text" formControlName="profilePicture">
-      </div>
+      <div class="form-group profile-picture-upload">
+  <label for="profilePicture">Profile Picture</label>
+  <div class="image-upload-container">
+    <div class="preview-container" *ngIf="imagePreview">
+      <img [src]="imagePreview" alt="Preview" class="image-preview">
+    </div>
+    <div class="upload-btn-wrapper">
+      <button type="button" class="upload-btn">Choose Image</button>
+      <input type="file" accept="image/*" id="profilePicture" (change)="onImagePicked($event)">
+    </div>
+  </div>
+  <small class="hint">Recommended: Square image, 300x300px or larger</small>
+</div>
       
       <div class="form-group">
         <label for="summary">Professional Summary</label>
@@ -64,8 +73,8 @@
     <section>
       <h3>Education</h3>
       
-      @for (education of educationArray.controls; track $index) {
-        <div class="form-section" (formGroup)="education">
+      @for (control of educationArray.controls; track $index) {
+        <div class="form-section" [formGroup]="$any(control)">
           <div class="form-header">
             <h4>Education #{{$index + 1}}</h4>
             <button type="button" class="remove-button" (click)="removeEducation($index)">Remove</button>
@@ -113,7 +122,7 @@
       <h3>Work Experience</h3>
       
       @for (work of workExperienceArray.controls; track $index) {
-        <div class="form-section" (formGroup)="work">
+        <div class="form-section" [formGroup]="$any(work)">
           <div class="form-header">
             <h4>Work Experience #{{$index + 1}}</h4>
             <button type="button" class="remove-button" (click)="removeWorkExperience($index)">Remove</button>
@@ -161,7 +170,7 @@
       <h3>Skills</h3>
       
       @for (skill of skillsArray.controls; track $index) {
-        <div class="form-row" (formGroup)="skill">
+        <div class="form-row" [formGroup]="$any(skill)">
           <div class="form-group skill-name">
             <label for="skillName{{$index}}">Skill *</label>
             <input id="skillName{{$index}}" type="text" formControlName="name" required>
@@ -184,7 +193,7 @@
       <h3>Languages</h3>
       
       @for (language of languagesArray.controls; track $index) {
-        <div class="form-row" (formGroup)="language">
+        <div class="form-row" [formGroup]="$any(language)">
           <div class="form-group">
             <label for="languageName{{$index}}">Language *</label>
             <input id="languageName{{$index}}" type="text" formControlName="name" required>
@@ -214,7 +223,7 @@
       <h3>Projects (Optional)</h3>
       
       @for (project of projectsArray.controls; track $index) {
-        <div class="form-section" (formGroup)="project">
+        <div class="form-section" [formGroup]="$any(project)">
           <div class="form-header">
             <h4>Project #{{$index + 1}}</h4>
             <button type="button" class="remove-button" (click)="removeProject($index)">Remove</button>

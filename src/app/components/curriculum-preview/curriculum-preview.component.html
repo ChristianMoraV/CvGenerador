@@ -1,108 +1,110 @@
-<div class="cv-container" *ngIf="curriculum">
-  <div class="cv-header">
+<div class="cv-container">
+  <!-- Cabecera con información personal -->
+  <header class="cv-header">
     <div class="profile-image-container" *ngIf="curriculum.personalInfo.profilePicture">
-      <img [src]="curriculum.personalInfo.profilePicture" alt="Profile picture" class="profile-image">
+      <img [src]="curriculum.personalInfo.profilePicture" alt="Photo of {{ curriculum.personalInfo.name }}" class="profile-image">
     </div>
-    
-    <div class="header-content">
+    <div class="header-info">
       <h1 class="name">{{ curriculum.personalInfo.name }}</h1>
-      <p class="title">{{ curriculum.personalInfo.title }}</p>
-      
-      <div class="contact-info">
-        <div class="contact-item">
-          <i class="email-icon"></i>
-          <span>{{ curriculum.personalInfo.email }}</span>
-        </div>
-        <div class="contact-item">
-          <i class="phone-icon"></i>
-          <span>{{ curriculum.personalInfo.phone }}</span>
-        </div>
-        <div class="contact-item" *ngIf="curriculum.personalInfo.address">
-          <i class="address-icon"></i>
-          <span>{{ curriculum.personalInfo.address }}</span>
-        </div>
-      </div>
+      <h2 class="title">{{ curriculum.personalInfo.title }}</h2>
+      <p class="summary">{{ curriculum.personalInfo.summary }}</p>
     </div>
-  </div>
+  </header>
   
-  <div class="cv-summary" *ngIf="curriculum.personalInfo.summary">
-    <h2>Professional Summary</h2>
-    <p>{{ curriculum.personalInfo.summary }}</p>
-  </div>
-  
-  <div class="cv-section" *ngIf="curriculum.workExperience?.length">
-    <h2>Work Experience</h2>
-    <div class="section-content">
-      <div class="experience-item" *ngFor="let work of curriculum.workExperience">
-        <div class="item-header">
-          <h3>{{ work.position }}</h3>
-          <p class="date">{{ formatDateRange(work.startDate, work.endDate) }}</p>
-        </div>
-        <p class="company">{{ work.company }}{{ work.location ? ' | ' + work.location : '' }}</p>
-        <p class="description" *ngIf="work.description">{{ work.description }}</p>
-        <ul class="responsibilities" *ngIf="work.responsibilities?.length">
-          <li *ngFor="let resp of work.responsibilities">{{ resp }}</li>
+  <div class="cv-content">
+    <!-- Columna izquierda -->
+    <div class="left-column">
+      <section class="cv-section">
+        <h3 class="section-title">EDUCACIÓN</h3>
+        <ul class="education-list">
+          @for (edu of curriculum.education; track edu.institution) {
+            <li class="education-item">
+              <p class="institution"><strong>{{ edu.institution }}</strong></p>
+              <p class="degree">{{ edu.degree }}, {{ edu.fieldOfStudy }}</p>
+              <p class="date">{{ getDateRangeText(edu.startDate, edu.endDate) }}</p>
+              <p class="description" *ngIf="edu.description">{{ edu.description }}</p>
+            </li>
+          }
         </ul>
-      </div>
-    </div>
-  </div>
-  
-  <div class="cv-section" *ngIf="curriculum.education?.length">
-    <h2>Education</h2>
-    <div class="section-content">
-      <div class="education-item" *ngFor="let edu of curriculum.education">
-        <div class="item-header">
-          <h3>{{ edu.degree }} in {{ edu.fieldOfStudy }}</h3>
-          <p class="date">{{ formatDateRange(edu.startDate, edu.endDate) }}</p>
-        </div>
-        <p class="institution">{{ edu.institution }}</p>
-        <p class="description" *ngIf="edu.description">{{ edu.description }}</p>
-      </div>
-    </div>
-  </div>
-  
-  <div class="two-column-section">
-    <div class="cv-section skills-section" *ngIf="curriculum.skills?.length">
-      <h2>Skills</h2>
-      <ul class="skills-list">
-        <li *ngFor="let skill of curriculum.skills">
-          <span class="skill-name">{{ skill.name }}</span>
-          <div class="skill-level" *ngIf="skill.level">
-            <div class="skill-bar" [style.width.%]="skill.level * 20"></div>
-          </div>
-        </li>
-      </ul>
+      </section>
+      
+      <section class="cv-section">
+        <h3 class="section-title">IDIOMAS</h3>
+        <ul class="languages-list">
+          @for (lang of curriculum.languages; track lang.name) {
+            <li class="language-item">
+              <p>Idioma {{ lang.name }} {{ lang.proficiency }}</p>
+              <p class="language-detail" *ngIf="lang.proficiency === 'Advanced'">Nivel Oral: Bilingüe | Escrito: Avanzado.</p>
+            </li>
+          }
+        </ul>
+      </section>
+      
+      <section class="cv-section">
+        <h3 class="section-title">CONTACTO</h3>
+        <ul class="contact-list">
+          <li class="contact-item">
+            <i class="contact-icon email-icon"></i>
+            <p>{{ curriculum.personalInfo.email }}</p>
+          </li>
+          <li class="contact-item">
+            <i class="contact-icon phone-icon"></i>
+            <p>{{ curriculum.personalInfo.phone }}</p>
+          </li>
+          @if (curriculum.personalInfo.address) {
+            <li class="contact-item">
+              <i class="contact-icon location-icon"></i>
+              <p>{{ curriculum.personalInfo.address }}</p>
+            </li>
+          }
+        </ul>
+      </section>
     </div>
     
-    <div class="cv-section languages-section" *ngIf="curriculum.languages?.length">
-      <h2>Languages</h2>
-      <ul class="languages-list">
-        <li *ngFor="let language of curriculum.languages">
-          <span class="language-name">{{ language.name }}</span>
-          <span class="language-proficiency">{{ language.proficiency }}</span>
-        </li>
-      </ul>
+    <!-- Columna derecha -->
+    <div class="right-column">
+      <section class="cv-section">
+        <h3 class="section-title">EXPERIENCIA LABORAL</h3>
+        @for (job of curriculum.workExperience; track job.company) {
+          <div class="experience-item">
+            <h4 class="job-title">{{ job.position }}, {{ job.company }}.</h4>
+            <p class="job-period">En {{ job.company }}, {{ getDateRangeText(job.startDate, job.endDate) }}</p>
+            
+            @if (job.description) {
+              <ul class="job-duties">
+                @for (duty of job.description.split('.'); track duty) {
+                  @if (duty.trim()) {
+                    <li>{{ duty.trim() }}.</li>
+                  }
+                }
+              </ul>
+            }
+          </div>
+        }
+      </section>
+      
+      @if (curriculum.projects && curriculum.projects.length > 0) {
+        <section class="cv-section">
+          <h3 class="section-title">VOLUNTARIADOS</h3>
+          @for (project of curriculum.projects; track project.name) {
+            <div class="volunteer-item">
+              <h4 class="volunteer-title">{{ project.name }}.</h4>
+              <p class="volunteer-period">{{ project.description }}</p>
+            </div>
+          }
+        </section>
+      }
+      
+      <section class="cv-section">
+        <h3 class="section-title">OTROS CONOCIMIENTOS</h3>
+        <ul class="skills-list">
+          @for (skill of curriculum.skills; track skill.name) {
+            <li class="skill-item">
+              <p>{{ skill.name }}</p>
+            </li>
+          }
+        </ul>
+      </section>
     </div>
-  </div>
-  
-  <div class="cv-section" *ngIf="curriculum.projects?.length">
-    <h2>Projects</h2>
-    <div class="section-content">
-      <div class="project-item" *ngFor="let project of curriculum.projects">
-        <h3>{{ project.name }}</h3>
-        <p class="project-url" *ngIf="project.url">
-          <a [href]="project.url" target="_blank">{{ project.url }}</a>
-        </p>
-        <p class="description" *ngIf="project.description">{{ project.description }}</p>
-        <div class="technologies" *ngIf="project.technologies?.length">
-          <span class="tech-badge" *ngFor="let tech of project.technologies">{{ tech }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="cv-section" *ngIf="curriculum.references">
-    <h2>References</h2>
-    <p>{{ curriculum.references }}</p>
   </div>
 </div>

@@ -11,16 +11,16 @@ import { Curriculum } from '../../models/Info.interface';
 })
 export class CurriculumPreviewComponent {
   @Input() curriculum!: Curriculum;
-  
-  // You can implement additional methods here for display logic
-  getYearFromDate(dateString: string | undefined): string {
-    if (!dateString) return 'Present';
-    return new Date(dateString).getFullYear().toString();
+
+  getFormattedDate(dateString: string | undefined): string {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleString('default', { month: 'long', year: 'numeric' });
   }
-  
-  formatDateRange(start: string, end?: string): string {
-    const startYear = this.getYearFromDate(start);
-    const endYear = end ? this.getYearFromDate(end) : 'Present';
-    return `${startYear} - ${endYear}`;
+
+  getDateRangeText(startDate: string, endDate: string | undefined): string {
+    const formattedStartDate = this.getFormattedDate(startDate);
+    if (!endDate) return `${formattedStartDate} - presente`;
+    return `${formattedStartDate} - ${this.getFormattedDate(endDate)}`;
   }
 }
