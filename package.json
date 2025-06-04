@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:cv-app": "node dist/cv-app/server/server.mjs",
-    "build:gh-pages": "ng build --output-path docs && xcopy docs\\browser\\* docs\\ /E /Y && rmdir docs\\browser /S /Q"
+    "build:gh-pages": "ng build --output-path docs --base-href=/CvGenerador/ && xcopy docs\\browser\\* docs\\ /E /Y && rmdir docs\\browser /S /Q"
   },
   "private": true,
   "dependencies": {

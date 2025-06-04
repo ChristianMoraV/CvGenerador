@@ -1,6 +1,6 @@
 
 export default {
-  basePath: '/',
+  basePath: '/CvGenerador',
   supportedLocales: {
   "en-US": ""
 },

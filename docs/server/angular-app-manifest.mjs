@@ -2,19 +2,19 @@
 export default {
   bootstrap: () => import('./main.server.mjs').then(m => m.default),
   inlineCriticalCss: true,
-  baseHref: '/',
+  baseHref: '/CvGenerador/',
   locale: undefined,
   routes: [
   {
     "renderMode": 2,
-    "route": "/"
+    "route": "/CvGenerador"
   }
 ],
   entryPointToBrowserMapping: undefined,
   assets: {
-    'index.csr.html': {size: 1420, hash: '30e0e28c76ffe8067785469ab24fa5c871a51a67c3fd7846b7fe681593cee69c', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 1104, hash: '51d51a838b30a44b3699132eb0f9cc43f3b66e7c1db2dbcb7d05b678fd804ffa', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
-    'index.html': {size: 28962, hash: '4ebbb22fb4fc363cffd6b07f8aad3d62a7e701ce826d9902f64810ed137cae9f', text: () => import('./assets-chunks/index_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 1432, hash: 'de31d445c5e2a092c5cee48f52fc8851f56f28bbf695ee1d64b41b3ddf938ec4', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 1116, hash: '6eebb81fd56c54bf478b69fc2374c986692bd7ebee382701a8919ecd870292ef', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
+    'index.html': {size: 28974, hash: '8fa751ae41db2002cc1d8d815c1eef53945a8ec8423be51f1afc4d0e4300502f', text: () => import('./assets-chunks/index_html.mjs').then(m => m.default)},
     'styles-6VZPZ37R.css': {size: 977, hash: 'm0wQMwTgNhs', text: () => import('./assets-chunks/styles-6VZPZ37R_css.mjs').then(m => m.default)}
   },
 };
