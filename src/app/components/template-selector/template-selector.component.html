@@ -1,0 +1,19 @@
+<div class="template-selector">
+  <h3 class="selector-title">Choose CV Template</h3>
+  <div class="templates-grid">
+    @for (template of templates; track template.id) {
+      <div 
+        class="template-card" 
+        [class.selected]="selectedTemplate === template.id"
+        (click)="selectTemplate(template.id)">
+        <div class="template-preview">
+          <div class="preview-{{ template.id }}"></div>
+        </div>
+        <div class="template-info">
+          <h4 class="template-name">{{ template.name }}</h4>
+          <p class="template-description">{{ template.description }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

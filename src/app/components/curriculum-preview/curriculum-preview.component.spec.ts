@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CurriculumPreviewComponent } from './curriculum-preview.component';
 import { Curriculum } from '../../models/Info.interface';
+import { TemplateService } from '../../services/template.service';
 
 describe('CurriculumPreviewComponent', () => {
   let component: CurriculumPreviewComponent;
@@ -22,7 +23,8 @@ describe('CurriculumPreviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CurriculumPreviewComponent]
+      imports: [CurriculumPreviewComponent],
+      providers: [TemplateService]
     })
     .compileComponents();
 

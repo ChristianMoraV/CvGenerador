@@ -240,6 +240,7 @@
 
   <main>
     <ng-container *ngIf="!showPreview; else previewTemplate">
+      <app-template-selector></app-template-selector>
       <app-curriculum-form (formSubmit)="handleFormSubmit($event)"></app-curriculum-form>
     </ng-container>
     
@@ -251,6 +252,7 @@
           </button>
           <app-pdf-export [curriculum]="curriculum!"></app-pdf-export>
         </div>
+        <app-template-selector></app-template-selector>
         <app-curriculum-preview [curriculum]="curriculum!"></app-curriculum-preview>
       </div>
     </ng-template>

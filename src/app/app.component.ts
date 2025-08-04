@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { CurriculumFormComponent } from './components/curriculum-form/curriculum-form.component';
 import { CurriculumPreviewComponent } from './components/curriculum-preview/curriculum-preview.component';
 import { PdfExportComponent } from './components/pdf-export/pdf-export.component';
+import { TemplateSelectorComponent } from './components/template-selector/template-selector.component';
 import { Curriculum } from './models/Info.interface';
 
 @Component({
@@ -14,7 +15,8 @@ import { Curriculum } from './models/Info.interface';
     RouterOutlet,
     CurriculumFormComponent,
     CurriculumPreviewComponent,
-    PdfExportComponent
+    PdfExportComponent,
+    TemplateSelectorComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
