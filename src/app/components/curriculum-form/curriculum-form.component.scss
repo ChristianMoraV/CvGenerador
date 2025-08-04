@@ -511,7 +511,7 @@ input[type="range"] {
     transition: all 0.2s ease;
 
     &:hover {
-      background-color: darken(#3b82f6, 10%);
+      background-color: #2563eb; /* Using direct color instead of darken() */
     }
   }
 

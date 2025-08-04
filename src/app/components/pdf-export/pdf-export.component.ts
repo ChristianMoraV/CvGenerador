@@ -151,65 +151,64 @@ export class PdfExportComponent {
 }
 
   private generatePdfFromElement(element: HTMLElement, cleanup: () => void) {
-  // Configuración para una mejor calidad
-  const options = {
-    scale: 2,
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: '#ffffff',
-    logging: false
-  };
+    // Configuración para una mejor calidad
+    const options = {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false
+    };
 
-  // Usar html2canvas en lugar de domtoimage para mejor compatibilidad
-  import('html2canvas').then(html2canvas => {
-    html2canvas.default(element, options).then(canvas => {
-      import('jspdf').then(jsPDF => {
-        try {
-          const pdf = new jsPDF.default('p', 'mm', 'a4');
-          const imgData = canvas.toDataURL('image/png');
-          const pageWidth = pdf.internal.pageSize.getWidth();
-          const pageHeight = pdf.internal.pageSize.getHeight();
-          const imgWidth = pageWidth;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          
-          let heightLeft = imgHeight;
-          let position = 0;
-          
-          // Primera página
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-          
-          // Agregar páginas adicionales si es necesario
-          while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
+    // Error handler for consistent error management
+    const handleError = (error: any, message: string) => {
+      console.error(error);
+      cleanup();
+      this.showErrorMessage(message);
+    };
+
+    // Usar html2canvas en lugar de domtoimage para mejor compatibilidad
+    import('html2canvas').then(html2canvas => {
+      html2canvas.default(element, options).then(canvas => {
+        import('jspdf').then(jsPDF => {
+          try {
+            const pdf = new jsPDF.default('p', 'mm', 'a4');
+            const imgData = canvas.toDataURL('image/png');
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = pageWidth;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            let heightLeft = imgHeight;
+            let position = 0;
+            
+            // Primera página
             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
+            
+            // Agregar páginas adicionales si es necesario
+            while (heightLeft >= 0) {
+              position = heightLeft - imgHeight;
+              pdf.addPage();
+              pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+              heightLeft -= pageHeight;
+            }
+            
+            const fileName = `CV_${this.curriculum.personalInfo.name.replace(/\s+/g, '_')}.pdf`;
+            pdf.save(fileName);
+            cleanup();
+          } catch (error) {
+            handleError(error, 'Error al generar el PDF. Por favor inténtelo de nuevo.');
           }
-          
-          const fileName = `CV_${this.curriculum.personalInfo.name.replace(/\s+/g, '_')}.pdf`;
-          pdf.save(fileName);
-          cleanup();
-        } catch (error) {
-          console.error('Error generating PDF', error);
-          cleanup();
-          this.showErrorMessage('Error al generar el PDF. Por favor inténtelo de nuevo.');
-        }
+        }).catch(error => {
+          handleError(error, 'No se pudo cargar la biblioteca de PDF. Por favor, verifique su conexión.');
+        });
       }).catch(error => {
-        console.error('Error loading jsPDF', error);
-        cleanup();
-        this.showErrorMessage('No se pudo cargar la biblioteca de PDF. Por favor, verifique su conexión.');
+        handleError(error, 'Error al procesar el CV para PDF. Intente con una imagen de perfil más pequeña.');
       });
     }).catch(error => {
-      console.error('Error with html2canvas', error);
-      cleanup();
-      this.showErrorMessage('Error al procesar el CV para PDF. Intente con una imagen de perfil más pequeña.');
+      handleError(error, 'No se pudo cargar la biblioteca necesaria. Por favor, verifique su conexión.');
     });
-  }).catch(error => {
-    console.error('Error loading html2canvas', error);
-    cleanup();
-    this.showErrorMessage('No se pudo cargar la biblioteca necesaria. Por favor, verifique su conexión.');
-  });
-}
+  }
 
 }
